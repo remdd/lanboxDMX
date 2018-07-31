@@ -16,21 +16,22 @@ TEST_OFF = '*C9010500#'
 
 
 #	DMX channels
-DMX_UNIVERSE = 01
+DMX_UNIVERSE = '01'
 DMX = {
-	'WILLIAM_PITT': 0,
-	'PLYMOUTH_POLL': 1,
-	'GIRL_GUIDE': 2,
-	'CHARLES_LITTLE': 3,
-	'JACK_TAR': 4,
-	'NELSON': 5,
-	'CALDWELL': 6,
-	'DEITY': 7,
-	'CHARLES_FOX': 8,
-	'PERSON_OF_SEA': 9,
-	'LIARDET': 10,
-	'BRITANNIA': 11,
-	'5': 99
+	#	Values correspond to individual spotlight assignments
+	'WILLIAM_PITT': '00',
+	'PLYMOUTH_POLL': '01',
+	'GIRL_GUIDE': '02',
+	'CHARLES_LITTLE': '03',
+	'JACK_TAR': '04',
+	'NELSON': '05',
+	'CALDWELL': '06',
+	'DEITY': '07',
+	'CHARLES_FOX': '08',
+	'PERSON_OF_SEA': '09',
+	'LIARDET': '10',
+	'BRITANNIA': '11',
+	'5': '99'
 }
 for key in sorted(DMX.iterkeys()):
 	print key + ': ' + str(DMX[key])
@@ -41,13 +42,29 @@ conversationObjects = []
 execfile('loadConversations.py')
 
 
-def sendTestCommand():
+def sendTestCommand(s):
 	for x in range(5):
-		print x
+		print x + 1
 		s.send(TEST_ON)
 		time.sleep(0.1)
 		s.send(TEST_OFF)
 		time.sleep(0.1)
+
+def longTest(s):
+	for x in range(3):
+		print x + 1
+		s.send(TEST_ON)
+		time.sleep(2)
+		s.send(TEST_OFF)
+		time.sleep(2)
+
+
+def turnAllOff(s):
+	for key in DMX:
+		command = '*C9' + DMX_UNIVERSE + DMX[key] + '00#'
+		print command
+		s.send(command)
+		getResponse(s)
 
 
 def launch():
@@ -60,17 +77,50 @@ def sendCommand(command):
 	sent = False
 	while not sent:
 		try:
+			#	Establish TCP socket with LanBox
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 			s.connect((LANBOX_IP, LANBOX_PORT))
 			s.send(LANBOX_PW)
-			s.send(command)
-			data = s.recv(BUFFER_SIZE)
-			print "Response from LANBOX:", data
+
+			# Send command
+			if command == 'test':
+				sendTestCommand(s)
+			elif command == 'longTest':
+				longTest(s)
+			elif command == 'off':
+				turnAllOff(s)
+			elif command == 'fadesOn':
+				command = "*4D0103#"
+				s.send(command)
+			elif command == 'fadesOff':
+				command = "*4D0100#"
+				s.send(command)
+			elif command == 'fadeFast':
+				command = "*4E0102"
+				s.send(command)
+			elif command == 'fadeMed':
+				command = "*4E010A"
+				s.send(command)
+			elif command == 'fadeLong':
+				command = "*4E0114"
+				s.send(command)
+			else:
+				s.send(command)
+
+			response = getResponse(s)
+			print response
+
+			# Close socket
 			sent = True
 			s.close()
 		except:
 			print "Not connected... retrying"
 			time.sleep(1)
+
+def getResponse(s):
+	data = s.recv(BUFFER_SIZE)
+	print "Response from LANBOX:", data
+	return data
 
 
 launch()
