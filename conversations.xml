@@ -3,85 +3,87 @@
 <document>
 
 	<conversation number="0">
+		<audioOffset>2.7</audioOffset>
+		<!-- audioOffset is a value to be added to all trigger times to aid in synchronizing the entire file -->
 		<trigger type="Lighting">
 			<time>1.0</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>7.5</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>7.5</time>
 			<channel>PLYMOUTH_POLL</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>17.5</time>
 			<channel>PLYMOUTH_POLL</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>17.5</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>27.5</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>27.5</time>
 			<channel>PLYMOUTH_POLL</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>39.7</time>
 			<channel>PLYMOUTH_POLL</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>39.7</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>48.0</time>
 			<channel>WILLIAM_PITT</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>48.0</time>
 			<channel>GIRL_GUIDE</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>56.3</time>
 			<channel>GIRL_GUIDE</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>56.0</time>
 			<channel>CHARLES_LITTLE</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>67.0</time>
 			<channel>CHARLES_LITTLE</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>67.0</time>
 			<channel>GIRL_GUIDE</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>3</time>
+			<time>95.0 </time>
 			<channel>GIRL_GUIDE</channel>
-			<value>94</value>
+			<value>00</value>
 		</trigger>
 	</conversation>
 
@@ -89,27 +91,27 @@
 		<trigger type="Lighting">
 			<time>0</time>
 			<channel>5</channel>
-			<value>150</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>0.25</time>
 			<channel>5</channel>
-			<value>0</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>0.5</time>
 			<channel>5</channel>
-			<value>150</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>0.75</time>
 			<channel>5</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>1</time>
 			<channel>5</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 	</conversation>
 
@@ -117,32 +119,32 @@
 		<trigger type="Lighting">
 			<time>0</time>
 			<channel>5</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.5</time>
 			<channel>5</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.75</time>
 			<channel>5</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5</time>
 			<channel>5</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5.25</time>
 			<channel>5</channel>
-			<value>255</value>
+			<value>FF</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>10</time>
 			<channel>5</channel>
-			<value>0</value>
+			<value>00</value>
 		</trigger>
 	</conversation>
 

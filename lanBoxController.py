@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import socket, time
+import socket, time, copy, datetime
 
 #	Lanbox settings
 LANBOX_IP = '192.168.1.77'
@@ -8,12 +8,20 @@ LANBOX_PORT = 777
 LANBOX_PW = '777\n'
 BUFFER_SIZE = 1024
 
-
-TEST_ON = '*C901057E#'
-TEST_OFF = '*C9010500#'
+#	General lanbox commands
+COMMANDS = {
+	'TEST_ON': '*C901057E#',
+	'TEST_OFF': '*C9010500#',
+	'FADE_ON': '*4D0103#',
+	'FADE_OFF': '*4D0100#',
+	'FADE_FAST': '*4E0104#',
+	'FADE_MED': '*4E0108#',
+	'FADE_SLOW': '*4E0110#',
+	'SAVE': '*A9#'
+}
 
 #	Controller settings
-
+playing = False
 
 #	DMX channels
 DMX_UNIVERSE = '01'
@@ -42,20 +50,21 @@ conversationObjects = []
 execfile('loadConversations.py')
 
 
+
 def sendTestCommand(s):
 	for x in range(5):
 		print x + 1
-		s.send(TEST_ON)
-		time.sleep(0.1)
-		s.send(TEST_OFF)
-		time.sleep(0.1)
+		s.send(COMMANDS['TEST_ON'])
+		time.sleep(0.25)
+		s.send(COMMANDS['TEST_OFF'])
+		time.sleep(0.25)
 
 def longTest(s):
 	for x in range(3):
 		print x + 1
-		s.send(TEST_ON)
+		s.send(COMMANDS['TEST_ON'])
 		time.sleep(2)
-		s.send(TEST_OFF)
+		s.send(COMMANDS['TEST_OFF'])
 		time.sleep(2)
 
 
@@ -83,29 +92,37 @@ def sendCommand(command):
 			s.send(LANBOX_PW)
 
 			# Send command
-			if command == 'test':
+			if command.upper() in COMMANDS:
+				command = COMMANDS[command.upper()]
+				s.send(command)
+			elif command.upper() == 'TEST':
 				sendTestCommand(s)
-			elif command == 'longTest':
+			elif command.upper() == 'TEST_LONG':
 				longTest(s)
-			elif command == 'off':
+			elif command.upper() == 'OFF':
 				turnAllOff(s)
-			elif command == 'fadesOn':
-				command = "*4D0103#"
-				s.send(command)
-			elif command == 'fadesOff':
-				command = "*4D0100#"
-				s.send(command)
-			elif command == 'fadeFast':
-				command = "*4E0102"
-				s.send(command)
-			elif command == 'fadeMed':
-				command = "*4E010A"
-				s.send(command)
-			elif command == 'fadeLong':
-				command = "*4E0114"
-				s.send(command)
+			# elif command == 'fadesOn':
+			# 	command = "*4D0103#"
+			# 	s.send(command)
+			# elif command == 'fadesOff':
+			# 	command = "*4D0100#"
+			# 	s.send(command)
+			# elif command == 'fadeFast':			#	sets global fade time to 200ms
+			# 	command = "*4E0104#"
+			# 	s.send(command)
+			# elif command == 'fadeMed':			#	global fade time to 400ms
+			# 	command = "*4E0108#"
+			# 	s.send(command)
+			# elif command == 'fadeLong':			#	global fade time to 800ms
+			# 	command = "*4E0110#"
+			# 	s.send(command)
+			# elif command == 'save':					#	save global fade settings to flash ROM
+			# 	command = "*A9#"
+			# 	s.send(command)
 			else:
 				s.send(command)
+
+			print "Command is " + command
 
 			response = getResponse(s)
 			print response

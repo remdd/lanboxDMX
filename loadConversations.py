@@ -26,9 +26,10 @@ for conversation in conversations:
 			tType = 'Lighting'
 			tTime = float(trigger.getElementsByTagName('time')[0].childNodes[0].nodeValue)
 			channel = DMX[str(trigger.getElementsByTagName('channel')[0].childNodes[0].nodeValue)]
-			value = int(trigger.getElementsByTagName('value')[0].childNodes[0].nodeValue)
+			value = str(trigger.getElementsByTagName('value')[0].childNodes[0].nodeValue)
 
 		newTrigger = Trigger(tType, tTime, channel, value)
+		print newTrigger.value
 		newConversation.triggers.append(newTrigger)
 
 	conversationObjects.append(newConversation)
