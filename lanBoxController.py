@@ -1,6 +1,15 @@
 #!/usr/bin/env python
+import socket, time, copy, datetime, sys, random
 
-import socket, time, copy, datetime
+#	change to true when running on Raspberry Pi
+runningOnPi = False
+
+if runningOnPi:
+	# import RPi GPIO pin controllers
+	import RPi.GPIO as GPIO
+
+# tcflush used to clear input buffer before requesting new input - prevents multi button presses queuing up multiple commands
+from termios import tcflush, TCIFLUSH
 
 #	Lanbox settings
 LANBOX_IP = '192.168.1.77'
@@ -22,64 +31,102 @@ COMMANDS = {
 
 #	Controller settings
 playing = False
+timeStamp = 0
+#	Min and max times of inactivity before next 'snippet' plays, in seconds
+snippetMinWait = 5
+snippetMaxWait = 10
+#	details of queued snippet and last one played
+nextSnippetTime = 0
+nextSnippetID = 0
+lastSnippetID = 0
 
-#	DMX channels
-DMX_UNIVERSE = '01'
-DMX = {
-	#	Values correspond to individual spotlight assignments
-	'WILLIAM_PITT': '00',
-	'PLYMOUTH_POLL': '01',
-	'GIRL_GUIDE': '02',
-	'CHARLES_LITTLE': '03',
-	'JACK_TAR': '04',
-	'NELSON': '05',
-	'CALDWELL': '06',
-	'DEITY': '07',
-	'CHARLES_FOX': '08',
-	'PERSON_OF_SEA': '09',
-	'LIARDET': '10',
-	'BRITANNIA': '11',
-	'5': '99'
-}
-for key in sorted(DMX.iterkeys()):
-	print key + ': ' + str(DMX[key])
-
-
-#	Load conversations from XML
+#	Load settings from XML
+# DMX_CHANNELS = {}
+snippetObjects = []
 conversationObjects = []
-execfile('loadConversations.py')
+execfile('loadXML.py')
 
+#	Configure Raspberry Pi and trigger buttons
+if runningOnPi:
+	GPIO.setmode(GPIO.BCM)
+
+for conversation in conversationObjects:
+	if runningOnPi:
+		GPIO.setup(conversation.pin, GPIO.IN, pull_up_down=GPI.PUD_UP)
+		print "Conversation " + str(conversation.id) + " is triggered through pin " + str(conversation.pin) + " on the Raspberry Pi."
 
 
 def sendTestCommand(s):
-	for x in range(5):
+	for x in range(3):
 		print x + 1
 		s.send(COMMANDS['TEST_ON'])
-		time.sleep(0.25)
+		time.sleep(0.4)
 		s.send(COMMANDS['TEST_OFF'])
-		time.sleep(0.25)
+		time.sleep(0.4)
 
 def longTest(s):
 	for x in range(3):
 		print x + 1
 		s.send(COMMANDS['TEST_ON'])
-		time.sleep(2)
+		time.sleep(3)
 		s.send(COMMANDS['TEST_OFF'])
-		time.sleep(2)
+		time.sleep(3)
 
 
 def turnAllOff(s):
-	for key in DMX:
-		command = '*C9' + DMX_UNIVERSE + DMX[key] + '00#'
+	print "Turning all lights off..."
+	for key in DMX_CHANNELS:
+		command = '*C9' + DMX_UNIVERSE + DMX_CHANNELS[key] + '00#'
 		print command
 		s.send(command)
-		getResponse(s)
+#		getResponse(s)
+	print "All lights turned off"
 
 
 def launch():
+	###########	Code to run once on first load ##########
+	# Turn all lights off
+	sendCommand('off')
+
+	########### Main loop ##########
 	while 1:
-		command = raw_input("Enter command: ")
-		sendCommand(command)
+		if runningOnPi:
+			if not playing:
+				print "Not playing!"
+				time.sleep(1)
+			else:
+				print "Playing..."
+				time.sleep(1)
+
+		else:
+			if not playing:
+				queueNextSnippet()
+				tcflush(sys.stdin, TCIFLUSH)
+				command = raw_input("Enter command: ")
+				while not command:
+					print "Waiting"
+					time.sleep(1)
+				sendCommand(command)
+			else:
+				time.sleep(1)
+
+
+def queueNextSnippet():
+	print "Queueing snippet..."
+	wait = random.randint(snippetMinWait, snippetMaxWait)
+	nextSnippetTime = datetime.datetime.now() + datetime.timedelta(seconds=wait)
+	print "Next snippet in " + str(wait) + " seconds"
+	rand = random.randint(0, len(snippetObjects)-1)
+	print "Next snippet ID is " + str(rand)
+	snippet_next = rand
+
+
+def unqueueSnippet():
+	print "Unqueuing snippet..."
+
+
+def playSnippet(s, snippetID):
+	print snippetID
 
 
 def sendCommand(command):
@@ -101,28 +148,17 @@ def sendCommand(command):
 				longTest(s)
 			elif command.upper() == 'OFF':
 				turnAllOff(s)
-			# elif command == 'fadesOn':
-			# 	command = "*4D0103#"
-			# 	s.send(command)
-			# elif command == 'fadesOff':
-			# 	command = "*4D0100#"
-			# 	s.send(command)
-			# elif command == 'fadeFast':			#	sets global fade time to 200ms
-			# 	command = "*4E0104#"
-			# 	s.send(command)
-			# elif command == 'fadeMed':			#	global fade time to 400ms
-			# 	command = "*4E0108#"
-			# 	s.send(command)
-			# elif command == 'fadeLong':			#	global fade time to 800ms
-			# 	command = "*4E0110#"
-			# 	s.send(command)
-			# elif command == 'save':					#	save global fade settings to flash ROM
-			# 	command = "*A9#"
-			# 	s.send(command)
+			elif command.upper() == 'PLAY':
+				conversationID = raw_input("Enter conversation ID: ")
+				validID = False
+				for conversation in conversationObjects:
+					if conversation.id == int(conversationID):
+						validID = True
+						playConversation(s, int(conversationID))
+				if not validID:
+					print "No conversation found with ID " + conversationID
 			else:
 				s.send(command)
-
-			print "Command is " + command
 
 			response = getResponse(s)
 			print response
@@ -139,5 +175,47 @@ def getResponse(s):
 	print "Response from LANBOX:", data
 	return data
 
+
+def getDMXCommand(characterID, value):
+	command = "*C9" + DMX_UNIVERSE + characterID + value + '#'
+	print "DMX command: " + command
+	return command
+
+
+def playConversation(s, conversationID):
+	global playing
+	if not playing:
+		#	Set playState to prevent further conversations from starting
+		playing = True
+
+		#	Turn off all lights just in case
+		turnAllOff(s)
+
+		#	Create a deep copy of the conversation to be played from the master list, sort by time value
+		triggerQueue = copy.deepcopy(conversationObjects[conversationID].triggers)
+		triggerQueue.sort(key = lambda x: x.time)
+
+		#	Set timeStamp to the time the button was pressed
+		global timeStamp
+		timeStamp = datetime.datetime.now()
+		print timeStamp
+
+		#	Check for hit triggers every 100ms while there are any in the queue
+		while len(triggerQueue) > 0:
+			time.sleep(0.1)
+			if datetime.datetime.now() - timeStamp > datetime.timedelta(seconds = triggerQueue[0].time):
+				print datetime.datetime.now()
+				print "Trigger! Time: " + str(triggerQueue[0].time)
+				command = getDMXCommand(triggerQueue[0].channel, triggerQueue[0].value)
+				sendCommand(command)
+				print "Command sent"
+				triggerQueue.pop(0)
+				print len(triggerQueue)
+
+		print("Conversation playback complete.")
+		playing = False
+
+	else:
+		print("A conversation is already playing!")
 
 launch()

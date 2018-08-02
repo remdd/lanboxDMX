@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<document>
+
+	<DMXuniverse>01</DMXuniverse>
+
+	<DMXchannels>
+		<!-- DMX channel numbers should match firmware of individual spotlights in DMX universe -->
+		<DMXchannel name="WILLIAM_PITT">00</DMXchannel>
+		<DMXchannel name="PLYMOUTH_POLL">01</DMXchannel>
+		<DMXchannel name="GIRL_GUIDE">02</DMXchannel>
+		<DMXchannel name="CHARLES_LITTLE">03</DMXchannel>
+		<DMXchannel name="JACK_TAR">04</DMXchannel>
+		<DMXchannel name="NELSON">05</DMXchannel>
+		<DMXchannel name="CALDWELL">06</DMXchannel>
+		<DMXchannel name="DEITY">07</DMXchannel>
+		<DMXchannel name="CHARLES_FOX">08</DMXchannel>
+		<DMXchannel name="PERSON_OF_SEA">09</DMXchannel>
+		<DMXchannel name="LIARDET">10</DMXchannel>
+		<DMXchannel name="BRITANNIA">11</DMXchannel>
+	</DMXchannels>
+
+	<conversation id="0">
+		<!-- pin is the ID of the Raspberry Pi GPIO pin connected to the trigger button for this conversation -->
+		<pin>17</pin>
+		<!-- offset is a value to be added to all trigger times to aid in synchronizing the entire file -->
+		<offset>2.7</offset>
+		<!-- lighting trigger values should be hex strings from 00-FF -->
+		<trigger type="Lighting">
+			<time>1.0</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>7.5</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>7.5</time>
+			<channel>PLYMOUTH_POLL</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>17.5</time>
+			<channel>PLYMOUTH_POLL</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>17.5</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>27.5</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>27.5</time>
+			<channel>PLYMOUTH_POLL</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>39.7</time>
+			<channel>PLYMOUTH_POLL</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>39.7</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>48.0</time>
+			<channel>WILLIAM_PITT</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>48.0</time>
+			<channel>GIRL_GUIDE</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>56.3</time>
+			<channel>GIRL_GUIDE</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>56.0</time>
+			<channel>CHARLES_LITTLE</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>67.0</time>
+			<channel>CHARLES_LITTLE</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>67.0</time>
+			<channel>GIRL_GUIDE</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>95.0 </time>
+			<channel>GIRL_GUIDE</channel>
+			<value>Off</value>
+		</trigger>
+	</conversation>
+
+	<conversation id="1">
+		<offset>1.1</offset>
+		<pin>18</pin>
+		<trigger type="Lighting">
+			<time>1.0</time>
+			<channel>NELSON</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>3.0</time>
+			<channel>NELSON</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>4</time>
+			<channel>NELSON</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>6.0</time>
+			<channel>NELSON</channel>
+			<value>Off</value>
+		</trigger>
+	</conversation>
+
+	<conversation id="2">
+		<offset>0</offset>
+		<pin>27</pin>
+		<trigger type="Lighting">
+			<time>0</time>
+			<channel>DEITY</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>2.5</time>
+			<channel>DEITY</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>2.75</time>
+			<channel>DEITY</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>5</time>
+			<channel>DEITY</channel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>5.25</time>
+			<channel>DEITY</channel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>10</time>
+			<channel>DEITY</channel>
+			<value>Off</value>
+		</trigger>
+	</conversation>
+
+	<snippets>
+		<snippet id="0">
+			<channel>NELSON</channel>
+			<duration>4</duration>
+		</snippet>
+		<snippet id="1">
+			<channel>NELSON</channel>
+			<duration>1</duration>
+		</snippet>
+		<snippet id="2">
+			<channel>DEITY</channel>
+			<duration>6</duration>
+		</snippet>
+	</snippets>
+
+</document>
