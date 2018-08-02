@@ -2,7 +2,7 @@
 import socket, time, copy, datetime, sys, random, threading
 
 #	change to true when running on Raspberry Pi
-runningOnPi = False
+runningOnPi = True
 
 if runningOnPi:
 	# import RPi GPIO pin controllers
@@ -53,7 +53,7 @@ if runningOnPi:
 
 for conversation in conversationObjects:
 	if runningOnPi:
-		GPIO.setup(conversation.pin, GPIO.IN, pull_up_down=GPI.PUD_UP)
+		GPIO.setup(conversation.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 		print "Conversation " + str(conversation.id) + " is triggered through pin " + str(conversation.pin) + " on the Raspberry Pi."
 
 
@@ -92,19 +92,19 @@ def kbdListener():
 def piListener():
 	global userCommand
 	while True:
-		btn_0_state = GPIO.input(conversationObjects[0].pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-		btn_1_state = GPIO.input(conversationObjects[1].pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-		btn_2_state = GPIO.input(conversationObjects[2].pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+		btn_0_state = GPIO.input(conversationObjects[0].pin)
+		btn_1_state = GPIO.input(conversationObjects[1].pin)
+		btn_2_state = GPIO.input(conversationObjects[2].pin)
 		if btn_0_state == False:
 			print "Button 0 pressed"
-			playConversation(0)
+			userCommand = 'play0'
 		elif btn_1_state == False:
 			print "Button 1 pressed"
-			playConversation(1)
+			userCommand = 'play1'
 		elif btn_2_state == False:
 			print "Button 2 pressed"
-			playConversation(2)
-
+			userCommand = 'play2'
+		time.sleep(0.1)
 
 def startListenerThread():
 	if runningOnPi:
@@ -127,28 +127,20 @@ def launch():
 
 	########### Main loop ##########
 	while 1:
-		if runningOnPi:
-			if not playing:
-				print "Not playing!"
-				time.sleep(1)
-			else:
-				print "Playing..."
-				time.sleep(1)
 
-		else:
-			if not playing:
-#				tcflush(sys.stdin, TCIFLUSH)
-				if userCommand:
-					print "Keyboard command! " + userCommand
-					sendCommand(userCommand)
-					userCommand = ''
-					startListenerThread()
-				else:
-					time.sleep(1)
-					if datetime.datetime.now() > nextSnippetTime:
-						playSnippet(nextSnippetID)
+		if not playing:
+#			tcflush(sys.stdin, TCIFLUSH)
+			if userCommand:
+				print "Keyboard command! " + userCommand
+				sendCommand(userCommand)
+				userCommand = ''
+				startListenerThread()
 			else:
 				time.sleep(1)
+				if datetime.datetime.now() > nextSnippetTime:
+					playSnippet(nextSnippetID)
+		else:
+			time.sleep(1)
 
 
 def queueNextSnippet():
