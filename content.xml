@@ -109,7 +109,7 @@
 	</conversation>
 
 	<conversation id="1">
-		<offset>1.1</offset>
+		<offset>1</offset>
 		<pin>18</pin>
 		<trigger type="Lighting">
 			<time>1.0</time>
@@ -138,32 +138,32 @@
 		<pin>27</pin>
 		<trigger type="Lighting">
 			<time>0</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.5</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.75</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5.25</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>10</time>
-			<channel>DEITY</channel>
+			<channel>NELSON</channel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
@@ -171,15 +171,15 @@
 	<snippets>
 		<snippet id="0">
 			<channel>NELSON</channel>
-			<duration>4</duration>
+			<duration>2</duration>
 		</snippet>
 		<snippet id="1">
 			<channel>NELSON</channel>
 			<duration>1</duration>
 		</snippet>
 		<snippet id="2">
-			<channel>DEITY</channel>
-			<duration>6</duration>
+			<channel>NELSON</channel>
+			<duration>3</duration>
 		</snippet>
 	</snippets>
 
