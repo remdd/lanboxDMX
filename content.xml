@@ -3,185 +3,258 @@
 <document>
 
 	<!-- DMX universe should match firmware setting on all spotlights -->
-	<DMXuniverse>01</DMXuniverse>
+	<lanboxConfig>
+		<IP>172.16.12.30</IP>
+		<port>777</port>
+		<password>777\n</password> 	<!-- Ignored! hardcoded in loadXML.py -->
+		<DMXuniverse>01</DMXuniverse>
+	</lanboxConfig>
+
 
 	<DMXchannels>
 		<!-- DMX channel numbers should match firmware of individual spotlights in DMX universe -->
-		<DMXchannel name="WILLIAM_PITT">00</DMXchannel>
-		<DMXchannel name="PLYMOUTH_POLL">01</DMXchannel>
-		<DMXchannel name="GIRL_GUIDE">02</DMXchannel>
-		<DMXchannel name="CHARLES_LITTLE">03</DMXchannel>
-		<DMXchannel name="JACK_TAR">04</DMXchannel>
-		<DMXchannel name="NELSON">05</DMXchannel>
-		<DMXchannel name="CALDWELL">06</DMXchannel>
-		<DMXchannel name="DEITY">07</DMXchannel>
-		<DMXchannel name="CHARLES_FOX">08</DMXchannel>
-		<DMXchannel name="PERSON_OF_SEA">09</DMXchannel>
-		<DMXchannel name="LIARDET">10</DMXchannel>
-		<DMXchannel name="BRITANNIA">11</DMXchannel>
+		<DMXchannel name="WILLIAM_PITT">0000</DMXchannel>
+		<DMXchannel name="PLYMOUTH_POLL">0001</DMXchannel>
+		<DMXchannel name="GIRL_GUIDE">0002</DMXchannel>
+		<DMXchannel name="CHARLES_LITTLE">0003</DMXchannel>
+		<DMXchannel name="JACK_TAR">0004</DMXchannel>
+		<DMXchannel name="NELSON">0005</DMXchannel>
+		<DMXchannel name="CALDWELL">0006</DMXchannel>
+		<DMXchannel name="DEITY">0007</DMXchannel>
+		<DMXchannel name="CHARLES_FOX">0008</DMXchannel>
+		<DMXchannel name="PERSON_OF_SEA">0009</DMXchannel>
+		<DMXchannel name="LIARDET">000A</DMXchannel>
+		<DMXchannel name="BRITANNIA">000B</DMXchannel>
 	</DMXchannels>
 
+	<multidapConfig>
+		<IP>172.16.4.201</IP> 			<!-- needs to be updated with gallery IP: 172.16.12.23 -->
+		<port>4024</port>
+	</multidapConfig>
+
+	<snippetConfig>
+		<!-- min and max times of inactivity in seconds before a snippet plays --> 
+		<minTime>3</minTime>
+		<maxTime>5</maxTime>
+	</snippetConfig>
+
+	<!--	Conversations -->
+
 	<conversation id="0">
-		<!-- pin is the ID of the Raspberry Pi GPIO pin connected to the trigger button for this conversation -->
+		<!-- pin = ID of Raspberry Pi GPIO pin connected to trigger button for this conversation -->
 		<pin>17</pin>
-		<!-- offset is a value to be added to all trigger times to aid in synchronizing the entire file -->
+		<!-- offset is added to all *lighting* trigger times to aid in synchronization -->
 		<offset>2.7</offset>
 		<!-- lighting trigger values should be hex strings from 00-FF -->
+
+<!-- 		<trigger type="Audio">
+			<flux>2</flux>
+			<file>1</file>
+		</trigger> -->
+		<trigger type="Audio">
+			<flux>3</flux>
+			<file>1</file>
+		</trigger>
+
 		<trigger type="Lighting">
 			<time>1.0</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>7.5</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>7.5</time>
-			<channel>PLYMOUTH_POLL</channel>
+			<DMXchannel>PLYMOUTH_POLL</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>17.5</time>
-			<channel>PLYMOUTH_POLL</channel>
+			<DMXchannel>PLYMOUTH_POLL</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>17.5</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>27.5</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>27.5</time>
-			<channel>PLYMOUTH_POLL</channel>
+			<DMXchannel>PLYMOUTH_POLL</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>39.7</time>
-			<channel>PLYMOUTH_POLL</channel>
+			<DMXchannel>PLYMOUTH_POLL</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>39.7</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>48.0</time>
-			<channel>WILLIAM_PITT</channel>
+			<DMXchannel>WILLIAM_PITT</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>48.0</time>
-			<channel>GIRL_GUIDE</channel>
+			<DMXchannel>GIRL_GUIDE</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>56.3</time>
-			<channel>GIRL_GUIDE</channel>
+			<DMXchannel>GIRL_GUIDE</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>56.0</time>
-			<channel>CHARLES_LITTLE</channel>
+			<DMXchannel>CHARLES_LITTLE</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>67.0</time>
-			<channel>CHARLES_LITTLE</channel>
+			<DMXchannel>CHARLES_LITTLE</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>67.0</time>
-			<channel>GIRL_GUIDE</channel>
+			<DMXchannel>GIRL_GUIDE</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>95.0 </time>
-			<channel>GIRL_GUIDE</channel>
+			<DMXchannel>GIRL_GUIDE</DMXchannel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
 
 	<conversation id="1">
-		<offset>1</offset>
 		<pin>18</pin>
+		<offset>1</offset>
+
+		<trigger type="Audio">
+			<flux>2</flux>
+			<file>1</file>
+		</trigger>
+		<trigger type="Audio">
+			<flux>3</flux>
+			<file>1</file>
+		</trigger>
+
 		<trigger type="Lighting">
 			<time>1.0</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>3.0</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>4</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>6.0</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
 
 	<conversation id="2">
-		<offset>0</offset>
 		<pin>27</pin>
+		<offset>0</offset>
+
+		<trigger type="Audio">
+			<flux>2</flux>
+			<file>1</file>
+		</trigger>
+		<trigger type="Audio">
+			<flux>3</flux>
+			<file>1</file>
+		</trigger>
+
 		<trigger type="Lighting">
 			<time>0</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.5</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>2.75</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>5.25</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
 			<time>10</time>
-			<channel>NELSON</channel>
+			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
 
+	<!-- Snippets -->
+
 	<snippets>
+
 		<snippet id="0">
-			<channel>NELSON</channel>
-			<duration>2</duration>
+			<duration>5</duration>
+			<trigger type="Lighting">
+				<DMXchannel>NELSON</DMXchannel>
+			</trigger>
+			<trigger type="Audio">
+				<flux>2</flux>
+				<file>1</file>
+			</trigger>
 		</snippet>
+
 		<snippet id="1">
-			<channel>NELSON</channel>
-			<duration>1</duration>
+			<duration>5</duration>
+			<trigger type="Lighting">
+				<DMXchannel>NELSON</DMXchannel>
+			</trigger>
+			<trigger type="Audio">
+				<flux>3</flux>
+				<file>1</file>
+			</trigger>
 		</snippet>
+
 		<snippet id="2">
-			<channel>NELSON</channel>
-			<duration>3</duration>
+			<duration>5</duration>
+			<trigger type="Lighting">
+				<DMXchannel>NELSON</DMXchannel>
+			</trigger>
+			<trigger type="Audio">
+				<flux>3</flux>
+				<file>1</file>
+			</trigger>
 		</snippet>
+
 	</snippets>
 
 </document>

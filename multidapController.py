@@ -40,7 +40,7 @@ def launch():
 			print "Command not recognized!"
 
 
-def sendCommand(command, snippetID=0):
+def sendCommand(command):
 	sent = False
 	print "Attempting to send command: " + command
 	while not sent:
@@ -48,14 +48,11 @@ def sendCommand(command, snippetID=0):
 			#	Establish TCP socket with LanBox
 			print "Attempting to connect..."
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-			print "Socket created..."
 			s.connect((MULTIDAP_IP, MULTIDAP_PORT))
-			print "Connection established..."
 			s.send(command)
 			response = getResponse(s)
 			# Close socket
 			if response != '':
-				print "Closing due to response received: " + response
 				sent = True
 				s.close()
 		except:

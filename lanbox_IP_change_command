@@ -1,0 +1,20 @@
+Lanbox 
+
+Static IP
+Decimal: 	172.16.12.30
+Hex:			AC	10 0C 1E
+
+
+Subnet
+Decimal: 	255.255.0.0
+Hex:			FF	FF	00 00
+
+
+Gateway
+Decimal: 	172.16.0.1
+Hex:			AC	10 00 01
+
+
+Command:
+
+*B0AC100C1EFFFF0000AC100001#

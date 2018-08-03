@@ -2,7 +2,7 @@
 import socket, time, copy, datetime, sys, random, threading
 
 #	change to true when running on Raspberry Pi
-runningOnPi = True
+runningOnPi = False
 
 if runningOnPi:
 	# import RPi GPIO pin controllers
@@ -11,14 +11,11 @@ if runningOnPi:
 # tcflush used to clear input buffer before requesting new input - prevents multi button presses queuing up multiple commands
 from termios import tcflush, TCIFLUSH
 
-#	Lanbox settings
-LANBOX_IP = '192.168.1.77'
-LANBOX_PORT = 777
-LANBOX_PW = '777\n'
+#	Socket buffer size
 BUFFER_SIZE = 1024
 
-#	General lanbox commands
-COMMANDS = {
+#	General commands
+LANBOX_COMMANDS = {
 	'TEST_ON': '*C901057E#',
 	'TEST_OFF': '*C9010500#',
 	'FADE_ON': '*4D0103#',
@@ -29,20 +26,23 @@ COMMANDS = {
 	'SAVE': '*A9#'
 }
 
+MULTIDAP_COMMANDS = {
+	'INFO': 'ID02MS011',
+	'VOL20': 'ID02VA020',
+	'TEST2': 'ID02PF001',
+	'TEST3': 'ID03PF001',
+}
+
 #	Controller settings
 playing = False
 timeStamp = 0
-userCommand = ''
-#	Min and max times of inactivity before next 'snippet' plays, in seconds
-snippetMinWait = 5
-snippetMaxWait = 10
+userLanboxCommand = ''
 #	details of queued snippet and last one played
 nextSnippetTime = 0
 nextSnippetID = 0
 lastSnippetID = 0
 
 #	Load settings from XML
-# DMX_CHANNELS = {}
 snippetObjects = []
 conversationObjects = []
 execfile('loadXML.py')
@@ -60,19 +60,18 @@ for conversation in conversationObjects:
 def sendTestCommand(s):
 	for x in range(3):
 		print x + 1
-		s.send(COMMANDS['TEST_ON'])
+		s.send(LANBOX_COMMANDS['TEST_ON'])
 		time.sleep(0.4)
-		s.send(COMMANDS['TEST_OFF'])
+		s.send(LANBOX_COMMANDS['TEST_OFF'])
 		time.sleep(0.4)
 
 def longTest(s):
 	for x in range(3):
 		print x + 1
-		s.send(COMMANDS['TEST_ON'])
+		s.send(LANBOX_COMMANDS['TEST_ON'])
 		time.sleep(3)
-		s.send(COMMANDS['TEST_OFF'])
+		s.send(LANBOX_COMMANDS['TEST_OFF'])
 		time.sleep(3)
-
 
 def turnAllOff(s):
 	print "Turning all lights off..."
@@ -80,30 +79,28 @@ def turnAllOff(s):
 		command = '*C9' + DMX_UNIVERSE + DMX_CHANNELS[key] + '00#'
 		print command
 		s.send(command)
-#		getResponse(s)
 	print "All lights turned off"
 
-
 def kbdListener():
-	global userCommand
-	userCommand = raw_input()
-	print "Input: " + userCommand
+	global userLanboxCommand
+	userLanboxCommand = raw_input()
+	print "Input: " + userLanboxCommand
 
 def piListener():
-	global userCommand
+	global userLanboxCommand
 	while True:
 		btn_0_state = GPIO.input(conversationObjects[0].pin)
 		btn_1_state = GPIO.input(conversationObjects[1].pin)
 		btn_2_state = GPIO.input(conversationObjects[2].pin)
 		if btn_0_state == False:
 			print "Button 0 pressed"
-			userCommand = 'play0'
+			userLanboxCommand = 'play0'
 		elif btn_1_state == False:
 			print "Button 1 pressed"
-			userCommand = 'play1'
+			userLanboxCommand = 'play1'
 		elif btn_2_state == False:
 			print "Button 2 pressed"
-			userCommand = 'play2'
+			userLanboxCommand = 'play2'
 		time.sleep(1)
 
 def startListenerThread():
@@ -118,22 +115,21 @@ def startListenerThread():
 def launch():
 	###########	Code to run once on first load ##########
 	# Turn all lights off
-	sendCommand('off')
+	sendLanboxCommand('off')
 	# Queue up a first snippet
 	queueNextSnippet()
 	#	Start input listener
 	startListenerThread()
-	global userCommand, listener
+	global userLanboxCommand, listener
 
 	########### Main loop ##########
 	while 1:
 
 		if not playing:
-#			tcflush(sys.stdin, TCIFLUSH)
-			if userCommand:
-				print "Keyboard command! " + userCommand
-				sendCommand(userCommand)
-				userCommand = ''
+			if userLanboxCommand:
+				print "Keyboard command! " + userLanboxCommand
+				sendLanboxCommand(userLanboxCommand)
+				userLanboxCommand = ''
 				startListenerThread()
 			else:
 				time.sleep(1)
@@ -147,6 +143,9 @@ def queueNextSnippet():
 	global nextSnippetTime, nextSnippetID, lastSnippetID
 	print "Queueing snippet..."
 	wait = random.randint(snippetMinWait, snippetMaxWait)
+	#	Prevent the same snippet playing twice on the trop
+	while wait == lastSnippetID:
+		wait = random.randint(snippetMinWait, snippetMaxWait)
 	nextSnippetTime = datetime.datetime.now() + datetime.timedelta(seconds=wait)
 	print nextSnippetTime
 	print "Next snippet in " + str(wait) + " seconds"
@@ -156,24 +155,32 @@ def queueNextSnippet():
 
 
 def playSnippet(snippetID):
+	global lastSnippetID
 	print "Playing snippet " + str(snippetID)
 	lastSnippetID = snippetID
-	sendCommand('snippet', snippetID)
+	sendLanboxCommand('snippet', snippetID)
+	print "Command sent!"
 	queueNextSnippet()
 
 
-def sendCommand(command, snippetID=0):
+def sendLanboxCommand(command, snippetID=0):
 	sent = False
+	print "Sending Lanbox command"
 	while not sent:
 		try:
 			#	Establish TCP socket with LanBox
+			print "Establishing Lanbox TCP socket"
 			s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			print LANBOX_IP + " ------- " + str(LANBOX_PORT)
+			print "Connecting to TCP socket"
 			s.connect((LANBOX_IP, LANBOX_PORT))
+			print "Sending PW"
 			s.send(LANBOX_PW)
-
+			#	Set to 16-bit mode
+			s.send("*65FF#")
 			# Send command
-			if command.upper() in COMMANDS:
-				command = COMMANDS[command.upper()]
+			if command.upper() in LANBOX_COMMANDS:
+				command = LANBOX_COMMANDS[command.upper()]
 				s.send(command)
 
 			elif command.upper() == 'TEST':
@@ -187,15 +194,13 @@ def sendCommand(command, snippetID=0):
 			elif command.upper() == 'OFF':
 				turnAllOff(s)
 
+			#	Play Conversation
 			elif command.upper() == 'PLAY0':
 				playConversation(s, 0)
-
 			elif command.upper() == 'PLAY1':
 				playConversation(s, 1)
-
 			elif command.upper() == 'PLAY2':
 				playConversation(s, 2)
-
 			elif command.upper() == 'PLAY':
 				conversationID = raw_input("Enter conversation ID: ")
 				validID = False
@@ -206,31 +211,40 @@ def sendCommand(command, snippetID=0):
 				if not validID:
 					print "No conversation found with ID " + conversationID
 
+			# Play Snippet
 			elif command.upper() == 'SNIPPET':
 				for snippet in snippetObjects:
 					if snippetID == snippet.id:
-						command = '*C9' + DMX_UNIVERSE + snippet.channel + 'FF#'
-						print 'DMX command: ' + command
-						s.send(command)
+						#	Send all lighting trigger ON commands
+						for trigger in snippet.lightingTriggers:
+							command = '*C9' + DMX_UNIVERSE + trigger.channel + 'FF#'
+							print 'Sending DMX command: ' + command
+							s.send(command)
+						for trigger in snippet.audioTriggers:
+							print "Triggering file " + trigger.file + " on flux " + trigger.flux
+							playMultiDapFile(trigger.flux, trigger.file)
+						#	Sleep for duration of snippet
 						time.sleep(snippet.duration)
-						command = '*C9' + DMX_UNIVERSE + snippet.channel + '00#'
-						s.send(command)
+						#	Send all lighting trigger OFF commands
+						for trigger in snippet.lightingTriggers:
+							command = '*C9' + DMX_UNIVERSE + trigger.channel + '00#'
+							s.send(command)
 
 			else:
 				s.send(command)
 
-			getResponse(s)
+			getLanboxResponse(s)
 
 			# Close socket
 			sent = True
 			s.close()
 		except:
-			print "Not connected... retrying"
+			print "No connection to LanBox... retrying"
 			time.sleep(1)
 
-def getResponse(s):
+def getLanboxResponse(s):
 	data = s.recv(BUFFER_SIZE)
-	print "Response from LANBOX:", data
+	print "Response from LanBox:", data
 	return data
 
 
@@ -239,6 +253,39 @@ def getDMXCommand(characterID, value):
 	print "DMX command: " + command
 	return command
 
+
+########################
+
+def playMultiDapFile(flux, file):
+	sent = False
+	print "Attempting to play track " + file + " on flux " + flux
+	while not sent:
+		try:
+			#	Establish TCP socket with MultiDAP
+			print "Attempting to connect to MultiDAP..."
+			m = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			m.connect((MULTIDAP_IP, MULTIDAP_PORT))
+			command = 'ID' + flux + 'PF' + file + '\r\n'
+			print "MultiDAP command: " + command
+			m.send(command)
+			response = getMultiDapResponse(m)
+			# Close socket
+			if response != '':
+				sent = True
+				m.close()
+		except:
+			print "No connection with MultiDAP - retrying..."
+			time.sleep(1)
+
+def getMultiDapResponse(m):
+	print "Getting response from MultiDAP..."
+	data = m.recv(BUFFER_SIZE)
+	if data != '':
+		print "Response received from MultiDAP: " + data
+	return data
+
+
+########################
 
 def playConversation(s, conversationID):
 	global playing
@@ -250,7 +297,7 @@ def playConversation(s, conversationID):
 		turnAllOff(s)
 
 		#	Create a deep copy of the conversation to be played from the master list, sort by time value
-		triggerQueue = copy.deepcopy(conversationObjects[conversationID].triggers)
+		triggerQueue = copy.deepcopy(conversationObjects[conversationID].lightingTriggers)
 		triggerQueue.sort(key = lambda x: x.time)
 
 		#	Set timeStamp to the time the button was pressed
@@ -258,17 +305,24 @@ def playConversation(s, conversationID):
 		timeStamp = datetime.datetime.now()
 		print timeStamp
 
+		audioTriggers = copy.deepcopy(conversationObjects[conversationID].audioTriggers)
+		for trigger in audioTriggers:
+			print "Playing file " + trigger.file + " on flux " + trigger.flux
+			playMultiDapFile(trigger.flux, trigger.file)
+
 		#	Check for hit triggers every 100ms while there are any in the queue
 		while len(triggerQueue) > 0:
 			time.sleep(0.1)
 			if datetime.datetime.now() - timeStamp > datetime.timedelta(seconds = triggerQueue[0].time):
 				print "Trigger! Time: " + str(triggerQueue[0].time)
 				command = getDMXCommand(triggerQueue[0].channel, triggerQueue[0].value)
-				sendCommand(command)
+				sendLanboxCommand(command)
 				triggerQueue.pop(0)
 				print len(triggerQueue)
 
 		print("Conversation playback complete.")
+		# Flush input
+		tcflush(sys.stdin, TCIFLUSH)
 		queueNextSnippet()
 		playing = False
 
