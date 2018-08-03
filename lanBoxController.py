@@ -104,7 +104,7 @@ def piListener():
 		elif btn_2_state == False:
 			print "Button 2 pressed"
 			userCommand = 'play2'
-		time.sleep(0.1)
+		time.sleep(1)
 
 def startListenerThread():
 	if runningOnPi:
@@ -196,15 +196,15 @@ def sendCommand(command, snippetID=0):
 			elif command.upper() == 'PLAY2':
 				playConversation(s, 2)
 
-			# elif command.upper() == 'PLAY':
-			# 	conversationID = raw_input("Enter conversation ID: ")
-			# 	validID = False
-			# 	for conversation in conversationObjects:
-			# 		if conversation.id == int(conversationID):
-			# 			validID = True
-			# 			playConversation(s, int(conversationID))
-			# 	if not validID:
-			# 		print "No conversation found with ID " + conversationID
+			elif command.upper() == 'PLAY':
+				conversationID = raw_input("Enter conversation ID: ")
+				validID = False
+				for conversation in conversationObjects:
+					if conversation.id == int(conversationID):
+						validID = True
+						playConversation(s, int(conversationID))
+				if not validID:
+					print "No conversation found with ID " + conversationID
 
 			elif command.upper() == 'SNIPPET':
 				for snippet in snippetObjects:

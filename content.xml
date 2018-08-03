@@ -2,6 +2,7 @@
 
 <document>
 
+	<!-- DMX universe should match firmware setting on all spotlights -->
 	<DMXuniverse>01</DMXuniverse>
 
 	<DMXchannels>
