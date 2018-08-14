@@ -27,9 +27,26 @@
 		<DMXchannel name="BRITANNIA">000B</DMXchannel>
 	</DMXchannels>
 
+	<!-- Audio channels should indicate Flux 01-08 of the MultiDAP -->
+	<!-- Note that each flux is used for 2 'channels', one panned left and one panned right -->
+	<audioFluxes>
+		<flux name="WILLIAM_PITT" channel="left">01</flux>
+		<flux name="PLYMOUTH_POLL" channel="right">01</flux>
+		<flux name="GIRL_GUIDE" channel="left">02</flux>
+		<flux name="CHARLES_LITTLE" channel="right">02</flux>
+		<flux name="JACK_TAR" channel="left">03</flux>
+		<flux name="NELSON" channel="right">03</flux>
+		<flux name="CALDWELL" channel="left">04</flux>
+		<flux name="DEITY" channel="right">04</flux>
+		<flux name="CHARLES_FOX" channel="left">05</flux>
+		<flux name="PERSON_OF_SEA" channel="left">06</flux>
+		<flux name="LIARDET" channel="right">06</flux>
+		<flux name="BRITANNIA" channel="left">07</flux>
+	</audioFluxes>
+
 	<multidapConfig>
 		<IP>172.16.4.201</IP> 			<!-- needs to be updated with gallery IP: 172.16.12.23 -->
-		<port>4024</port>
+		<port>4024</port> 					<!-- TCP = 4024, UDP = 4023 -->
 	</multidapConfig>
 
 	<snippetConfig>
@@ -40,22 +57,23 @@
 
 	<!--	Conversations -->
 
+	<!-- Conversation 0 = Script 1 = Charles Little, Girl Guide, Plymouth Poll & William Pitt -->
 	<conversation id="0">
 		<!-- pin = ID of Raspberry Pi GPIO pin connected to trigger button for this conversation -->
 		<pin>17</pin>
 		<!-- offset is added to all *lighting* trigger times to aid in synchronization -->
-		<offset>2.7</offset>
+		<offset>0</offset>
 		<!-- lighting trigger values should be hex strings from 00-FF -->
 
-<!-- 		<trigger type="Audio">
-			<flux>2</flux>
-			<file>1</file>
-		</trigger> -->
 		<trigger type="Audio">
-			<flux>3</flux>
+			<flux>1</flux>
 			<file>1</file>
 		</trigger>
-
+		<trigger type="Audio">
+			<flux>2</flux>
+			<file>1</file>
+		</trigger>
+ 
 		<trigger type="Lighting">
 			<time>1.0</time>
 			<DMXchannel>WILLIAM_PITT</DMXchannel>
@@ -138,82 +156,213 @@
 		</trigger>
 	</conversation>
 
+
+
+	<!-- Conversation 1 = Script 2 = Charles Fox, Caldwell, Crowd (!!!), Deity, Jack Tar & Nelson -->
 	<conversation id="1">
 		<pin>18</pin>
-		<offset>1</offset>
+		<offset>0</offset>
 
-		<trigger type="Audio">
-			<flux>2</flux>
-			<file>1</file>
-		</trigger>
 		<trigger type="Audio">
 			<flux>3</flux>
 			<file>1</file>
 		</trigger>
+		<trigger type="Audio">
+			<flux>4</flux>
+			<file>1</file>
+		</trigger>
+		<trigger type="Audio">
+			<flux>5</flux>
+			<file>1</file>
+		</trigger>
 
 		<trigger type="Lighting">
-			<time>1.0</time>
+			<time>0.0</time>
+			<DMXchannel>JACK_TAR</DMXchannel>
+			<value>On</value>
+		</trigger>
+<!-- 		<trigger type="Lighting">
+			<time>7.5</time>
+			<DMXchannel>Crowd??</DMXchannel>
+			<value>on</value>
+		</trigger> -->
+		<trigger type="Lighting">
+			<time>7.7</time>
+			<DMXchannel>JACK_TAR</DMXchannel>
+			<value>Off</value>
+		</trigger>
+<!-- 		<trigger type="Lighting">
+			<time>15.5</time>
+			<DMXchannel>Crowd??</DMXchannel>
+			<value>off</value>
+		</trigger> -->
+		<trigger type="Lighting">
+			<time>15.7</time>
+			<DMXchannel>NELSON</DMXchannel>
+			<value>On</value>
+		</trigger>
+<!-- 		<trigger type="Lighting">
+			<time>17.2</time>
+			<DMXchannel>Crowd??</DMXchannel>
+			<value>On</value>
+		</trigger> -->
+		<trigger type="Lighting">
+			<time>17.3</time>
+			<DMXchannel>NELSON</DMXchannel>
+			<value>Off</value>
+		</trigger>
+<!-- 		<trigger type="Lighting">
+			<time>23.3</time>
+			<DMXchannel>Crowd??</DMXchannel>
+			<value>Off</value>
+		</trigger> -->
+		<trigger type="Lighting">
+			<time>23.3</time>
 			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>3.0</time>
+			<time>29.0</time>
+			<DMXchannel>CALDWELL</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>29.1</time>
 			<DMXchannel>NELSON</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>4</time>
+			<time>41.4</time>
+			<DMXchannel>CALDWELL</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>41.4</time>
 			<DMXchannel>NELSON</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>6.0</time>
+			<time>48.7</time>
 			<DMXchannel>NELSON</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>48.8</time>
+			<DMXchannel>DEITY</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>79.0</time>
+			<DMXchannel>DEITY</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>79.3</time>
+			<DMXchannel>CHARLES_FOX</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>99.8</time>
+			<DMXchannel>CHARLES_FOX</DMXchannel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
 
+
+
+	<!-- Conversation 2 = Script 3 = Britannia, Liardet, Person of the Sea -->
 	<conversation id="2">
 		<pin>27</pin>
 		<offset>0</offset>
 
 		<trigger type="Audio">
-			<flux>2</flux>
+			<flux>6</flux>
 			<file>1</file>
 		</trigger>
 		<trigger type="Audio">
-			<flux>3</flux>
+			<flux>7</flux>
 			<file>1</file>
 		</trigger>
 
+
 		<trigger type="Lighting">
 			<time>0</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>2.5</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<time>12.6</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>2.75</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<time>12.7</time>
+			<DMXchannel>LIARDET</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>5</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<time>15.8</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>16.3</time>
+			<DMXchannel>LIARDET</DMXchannel>
 			<value>Off</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>5.25</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<time>30.0</time>
+			<DMXchannel>LIARDET</DMXchannel>
 			<value>On</value>
 		</trigger>
 		<trigger type="Lighting">
-			<time>10</time>
-			<DMXchannel>NELSON</DMXchannel>
+			<time>30.2</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>36.3</time>
+			<DMXchannel>LIARDET</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>36.4</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>48.0</time>
+			<DMXchannel>LIARDET</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>48.7</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>64.2</time>
+			<DMXchannel>LIARDET</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>64.3</time>
+			<DMXchannel>BRITANNIA</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>73.2</time>
+			<DMXchannel>BRITANNIA</DMXchannel>
+			<value>Off</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>73.3</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
+			<value>On</value>
+		</trigger>
+		<trigger type="Lighting">
+			<time>80.0</time>
+			<DMXchannel>PERSON_OF_SEA</DMXchannel>
 			<value>Off</value>
 		</trigger>
 	</conversation>
@@ -250,7 +399,7 @@
 				<DMXchannel>NELSON</DMXchannel>
 			</trigger>
 			<trigger type="Audio">
-				<flux>3</flux>
+				<flux>4</flux>
 				<file>1</file>
 			</trigger>
 		</snippet>

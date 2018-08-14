@@ -127,4 +127,4 @@ for snippet in snippets:
 
 	snippetObjects.append(newSnippet)
 
-
+print snippetObjects[0].audioTriggers[0].file
